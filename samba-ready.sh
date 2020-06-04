@@ -15,6 +15,7 @@ function copy_files(){
 
 echo "[*] backup the original smb.conf file";
 mv /etc/samba/smb.conf /etc/samba/smb.conf.backup
+echo "[*] copying your smb.conf file[*]";
 mv smb.conf /etc/samba/
 
 }
@@ -49,7 +50,22 @@ function samba_users(){
 
 read -p "[*]Please enter the new group name for samba users: " user_input_group
 groupadd $user_input_group
-
+read -p "[*]Please enter the name of the user who will be using samba: " user_input_user
+usermod -a -G $user_input_group $user_input_user
+echo "[*] Create an smb password for the user [*]"
+smbpassword -a $user_input_user
+systemctl restart smb.service
+systemctl restart nmb.service
 }
 
-samba_users
+#Make sure only root user can run that.
+if [[ $EUID -ne 0 ]]; then
+	echo "This script must be run as a root" 1>&2
+	exit 1
+else
+	update
+	copy_files
+	open_shares_and_selinux_conf
+	disable_selinux_and_restart_services
+	samba_users
+fi
