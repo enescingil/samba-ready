@@ -1,0 +1,9 @@
+{
+	"name": "alictustest",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "93b2cbd9-eccb-4b4b-bd01-582492a2605c",
+		"tenantId": "619dcbe4-7b4a-45e7-ab05-e7865a3bf331"
+	}
+}
